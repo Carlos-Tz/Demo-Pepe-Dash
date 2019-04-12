@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <meta name="description" content="">
+  <meta name="author" content="">
+
+  <title>Dashboard</title>
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <!-- Bootstrap core CSS-->
+  <link href="./vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+ <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" crossorigin="anonymous">
+  <link href="./vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
+  <!-- <link href="https://cdn.datatables.net/buttons/1.5.2/css/buttons.dataTables.min.css" rel="stylesheet"> -->
+  <link href="./css/sb-admin.css" rel="stylesheet">
+  <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.css" />
+
+
+  <link rel="stylesheet" href="https://cdn.datatables.net/1.10.19/css/jquery.dataTables.min.css">
+  <link rel="stylesheet" href="https://cdn.datatables.net/buttons/1.5.6/css/buttons.dataTables.min.css">
+  
+
+
+  <!-- Firebase -->
+  <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
+  <script type="text/javascript">
+    // Initialize Firebase
+    const config = {
+      apiKey: "AIzaSyBFMBQ-cq2OZuVZdbzpcMUWLvg0niWSTLs",
+      authDomain: "pepe-gaucho-a2c5d.firebaseapp.com",
+      databaseURL: "https://pepe-gaucho-a2c5d.firebaseio.com",
+      projectId: "pepe-gaucho-a2c5d",
+      storageBucket: "pepe-gaucho-a2c5d.appspot.com",
+      messagingSenderId: "227255126681"
+    };
+
+    firebase.initializeApp(config);
+
+    function signOut() {
+      firebase.auth().signOut();
+    }
+
+    function initApp() {
+
+      firebase.auth().onAuthStateChanged(function (user) {
+        if (user) {
+        } else {
+          window.location.href = 'login.html';
+        }
+      });
+
+      // logout
+      const logout = document.getElementById('logout');
+      logout.addEventListener('click', function (e) {
+        e.preventDefault();
+        signOut();
+      });
+    }
+    window.onload = function () {
+      initApp();
+    };
+  </script>
+
+</head>
+
+<body id="page-top">
+
+  <nav class="navbar navbar-expand navbar-dark bg-dark static-top">
+
+    <a class="navbar-brand mr-1" href="index.html">Pepe Gaucho</a>
+
+    <button class="btn btn-link btn-sm text-white order-1 order-sm-0" id="sidebarToggle" href="#">
+      <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Navbar Search -->
+    <form class="d-none d-md-inline-block form-inline ml-auto mr-0 mr-md-3 my-2 my-md-0">
+      <div class="input-group"></div>
+    </form>
+
+    <!-- Navbar -->
+    <ul class="navbar-nav ml-auto ml-md-0">
+      <li class="nav-item dropdown no-arrow">
+        <a class="nav-link dropdown-toggle" href="#" id="userDropdown" role="button" data-toggle="dropdown"
+          aria-haspopup="true" aria-expanded="false">
+          <i class="fas fa-user-circle fa-fw"></i>
+        </a>
+        <div class="dropdown-menu dropdown-menu-right" aria-labelledby="userDropdown">
+          <a class="dropdown-item" href="#" data-toggle="modal" data-target="#logoutModal">Logout</a>
+        </div>
+      </li>
+    </ul>
+
+  </nav>
+
+  <div id="wrapper">
+
+    <div id="content-wrapper">
+
+      <div class="container-fluid">
+
+        <!-- Breadcrumbs-->
+        <ol class="breadcrumb">
+          <li class="breadcrumb-item">
+            <a href="/">Formato</a>
+          </li>
+          <li class="breadcrumb-item active">Dashboard</li>
+        </ol>
+        <div class="row" style="margin-bottom: 25px;">
+          <div class="col-md-12 col-lg-4">
+            <p><b>Rango de fechas:</b></p>
+            <div style="display: flex;">
+              <input class="form-control" name="daterange" type="text" id="daterange" />
+              <label for="daterange">
+                <img src="./calendar-alt-regular.svg" alt="" style="height: 36px;">
+              </label>
+
+            </div>
+            </span>
+          </div>
+        </div>
+        <div class="row">
+          <div class="col-md-12 col-lg-4">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-pie"></i>
+                Servicio
+              </div>
+              <div class="card-body">
+                <canvas id="servicioChart" width="100%" height="100"></canvas>
+              </div>
+              
+            </div>
+          </div>
+          <div class="col-md-12 col-lg-4">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-pie"></i>
+                Calidad
+              </div>
+              <div class="card-body">
+                <canvas id="calidadChart" width="100%" height="100"></canvas>
+              </div>
+              
+            </div>
+          </div>
+          <div class="col-md-12 col-lg-4">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-pie"></i>
+                Precio
+              </div>
+              <div class="card-body">
+                <canvas id="precioChart" width="100%" height="100"></canvas>
+              </div>
+              
+            </div>
+          </div>
+          <div class="col-md-12 col-lg-4">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-pie"></i>
+                Limpieza
+              </div>
+              <div class="card-body">
+                <canvas id="limpiezaChart" width="100%" height="100"></canvas>
+              </div>
+              
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-pie"></i>
+                ¿Se acercó el capitán o gerente a su mesa?
+              </div>
+              <div class="card-body">
+                <canvas id="pieChart1" width="100%" height="100"></canvas>
+              </div>
+              
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-pie"></i>
+                ¿Le ofrecieron algún vino de mesa?
+              </div>
+              <div class="card-body">
+                <canvas id="pieChart2" width="100%" height="100"></canvas>
+              </div>
+              
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-pie"></i>
+                ¿Le ofrecieron la carta de postres?
+              </div>
+              <div class="card-body">
+                <canvas id="pieChart3" width="100%" height="100"></canvas>
+              </div>
+              
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-pie"></i>
+                ¿Le gustaría recibir información sobre catas eventos y promociones?
+              </div>
+              <div class="card-body">
+                <canvas id="pieChart4" width="100%" height="100"></canvas>
+              </div>
+              
+            </div>
+          </div>
+          <div class="col-lg-4">
+            <div class="card mb-3">
+              <div class="card-header">
+                <i class="fas fa-chart-pie"></i>
+                ¿Nos recomendaría con sus conocidos?
+              </div>
+              <div class="card-body">
+                <canvas id="pieChart5" width="100%" height="100"></canvas>
+              </div>
+              
+            </div>
+          </div>
+        </div>
+
+
+      </div>
+
+      <!-- DataTables Example -->
+      <div class="card mb-3">
+        <div class="card-header">
+          <i class="fas fa-table"></i>
+          Datos de los clientes
+        </div>
+        <div class="card-body">
+          <div class="table-responsive">
+            <table class="table table-bordered" id="dataTable" width="100%" cellspacing="0">
+              <thead>
+                <tr>
+                  <th>Nombre</th>
+                  <th>Email</th>
+                  <th>Fecha de Nacimiento</th>
+                  <th>Teléfono</th>
+                  <th>Recibir promociones</th>
+                  <th>Comentarios</th>
+                </tr>
+              </thead>
+              <tbody>
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+    </div>
+    <!-- /.container-fluid -->
+
+    <!-- Sticky Footer -->
+    <footer class="sticky-footer">
+      <div class="container my-auto">
+        <div class="copyright text-center my-auto">
+          <span>Copyright © Didocu 2019</span>
+        </div>
+      </div>
+    </footer>
+
+  </div>
+  <!-- /.content-wrapper -->
+
+  </div>
+  <!-- /#wrapper -->
+
+  <!-- Scroll to Top Button-->
+  <a class="scroll-to-top rounded" href="#page-top">
+    <i class="fas fa-angle-up"></i>
+  </a>
+
+  <!-- Logout Modal-->
+  <div class="modal fade" id="logoutModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+    aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h5 class="modal-title" id="exampleModalLabel">¿Listo para salir?</h5>
+          <button class="close" type="button" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">×</span>
+          </button>
+        </div>
+        <div class="modal-body">Seleccione "Logout" si desea cerrar la sesión.</div>
+        <div class="modal-footer">
+          <button class="btn btn-secondary" type="button" data-dismiss="modal">Cancelar</button>
+          <a class="btn btn-primary" href="./login.html" id="logout">Logout</a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Bootstrap core JavaScript-->
+  <script src="./vendor/jquery/jquery.min.js"></script>
+  <script src="./vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+  <!-- Core plugin JavaScript-->
+  <script src="./vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  <!-- Page level plugin JavaScript-->
+  <script src="./vendor/chart.js/Chart.min.js"></script>
+  <script src="./vendor/chart.js/chartjs-plugin-datalabels.js"></script>
+ <!--  <script src="./vendor/datatables/jquery.dataTables.min.js"></script>
+  <script src="./vendor/datatables/dataTables.bootstrap4.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.2/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.flash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.36/vfs_fonts.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.2/js/buttons.print.min.js"></script> -->
+  <script src="https://code.jquery.com/jquery-3.3.1.js"></script>
+  <script src="https://cdn.datatables.net/1.10.19/js/jquery.dataTables.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.6/js/dataTables.buttons.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.flash.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.1.3/jszip.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/pdfmake.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.1.53/vfs_fonts.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.html5.min.js"></script>
+  <script src="https://cdn.datatables.net/buttons/1.5.6/js/buttons.print.min.js"></script>
+
+  <!-- Custom scripts for all pages-->
+  <script src="./js/sb-admin.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/momentjs/latest/moment.min.js"></script>
+  <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/daterangepicker/daterangepicker.min.js"></script>
+
+  <!-- Demo scripts for this page-->
+  <script src="./js/demo/datatables-demo.js"></script>
+  <script src="./js/demo/chart-pie.js"></script>
+
+  <script>
+    let startDate = Date.now();
+   
+    let endDate = Date.now();
+    let tableOptions = {
+      "language": {
+        "lengthMenu": "Mostrando _MENU_ registros por página",
+        "search": "Buscar",
+        "zeroRecords": "No se ha encontró nada",
+        "info": "Mostrando página _PAGE_ de _PAGES_",
+        "infoEmpty": "No hay registros disponibles",
+        "infoFiltered": "(filtrado de _MAX_ registros totales)",
+        "oPaginate": {
+          "sPrevious": "Anterior",
+          "sNext": "Siguiente"
+        },
+      },
+      dom: 'Bfrtip',
+      buttons: [
+        {
+          extend: 'excel',
+          text: 'Exportar a excel',
+          filename: 'Base-de-datos-encuestados',
+          title: 'Datos de los encuestados',
+          exportOptions: {
+            modifier: {
+              page: 'current'
+            }
+          }
+        },
+        {
+          extend: 'pdf',
+          text: 'Exportar a PDF',
+          filename: 'Base-de-datos-encuestados',
+          title: 'Datos de los encuestados',
+          exportOptions: {
+            modifier: {
+              page: 'current'
+            }
+          }
+        },
+        {
+          extend: 'print',
+          text: 'Imprimir tabla',
+          title: 'Datos de los encuestados',
+
+        }
+      ]
+    };
+    let table = $('#dataTable').DataTable(tableOptions);
+    index();
+    chartDatatable(startDate, endDate, table);
+
+    // const database = firebase.database();
+    // const rootRef = database.ref().child('polls');
+
+
+    $(function () {
+      $("#daterange").daterangepicker({
+        opens: 'down',
+        locale: {
+          format: 'DD-MM-YYYY'
+        }
+      }, function (start, end, label) {
+        startDate = start.format("YYYY-MM-DD");
+        endDate = end.format("YYYY-MM-DD");
+        console.log("A new date selection was made: " + start.format('YYYY-MM-DD') + ' to ' + end.format('YYYY-MM-DD'));
+
+      });
+
+    });
+
+    $('#daterange').on('apply.daterangepicker', function (ev, picker) {
+      //console.log(picker.startDate.format("YYYY-MM-DD"));
+      /* startDate = picker.startDate.format("YYYY.MM.DD");
+      endDate = picker.endDate.format("YYYY.MM.DD");
+       console.log(new Date(startDate).getTime()); */
+       startDate = picker.startDate.format("YYYY-MM-DD");
+       endDate = picker.endDate.format("YYYY-MM-DD");
+      // console.log(new Date(startDate).getTime());
+       index(new Date(startDate).getTime(), new Date(endDate).getTime());
+      table.clear();
+      
+      chartDatatable(new Date(startDate).getTime(), new Date(endDate).getTime(), table);
+
+    });
+
+  </script>
+
+</body>
+
+</html>

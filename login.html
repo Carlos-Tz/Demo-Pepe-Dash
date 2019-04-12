@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html lang="en">
+
+  <head>
+
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <meta name="description" content="">
+    <meta name="author" content="">
+
+    <title>Dashboard Login</title>
+
+    <!-- Bootstrap core CSS-->
+    <link href="vendor/bootstrap/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Custom fonts for this template-->
+    <link href="vendor/fontawesome-free/css/all.min.css" rel="stylesheet" type="text/css">
+
+    <!-- Custom styles for this template-->
+    <link href="css/sb-admin.css" rel="stylesheet">
+
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/5.5.7/firebase.js"></script>
+    <script type="text/javascript">
+      // Initialize Firebase
+      const config = {
+        apiKey: "AIzaSyBFMBQ-cq2OZuVZdbzpcMUWLvg0niWSTLs",
+      authDomain: "pepe-gaucho-a2c5d.firebaseapp.com",
+      databaseURL: "https://pepe-gaucho-a2c5d.firebaseio.com",
+      projectId: "pepe-gaucho-a2c5d",
+      storageBucket: "pepe-gaucho-a2c5d.appspot.com",
+      messagingSenderId: "227255126681"
+      };
+
+      firebase.initializeApp(config);
+
+      console.log(firebase.auth().currentUser);
+
+
+      /**
+       * Handles the sign in button press.
+       */
+      function toggleSignIn() {
+        if (firebase.auth().currentUser) {
+          // [START signout]
+          firebase.auth().signOut();
+          // [END signout]
+        } else {
+          var email = document.getElementById('email').value;
+          var password = document.getElementById('password').value;
+          if (email.length < 4) {
+            alert('Por favor ingrese una dirección de correo.');
+            return;
+          }
+          if (password.length < 4) {
+            alert('Ingrese una contraseña válida');
+            return;
+          }
+          // Sign in with email and pass.
+          // [START authwithemail]
+          firebase.auth().signInWithEmailAndPassword(email, password).catch(function (error) {
+            // Handle Errors here.
+            var errorCode = error.code;
+            var errorMessage = error.message;
+            // [START_EXCLUDE]
+            if (errorCode === 'auth/wrong-password') {
+              alert('Contraseña incorrecta.');
+            } else {
+              alert(errorMessage);
+            }
+            console.log(error);
+            document.getElementById('quickstart-sign-in').disabled = false;
+            // [END_EXCLUDE]
+          });
+          // [END authwithemail]
+        }
+        document.getElementById('quickstart-sign-in').disabled = true;
+      }
+
+      /**
+       * Sends an email verification to the user.
+       */
+      function sendEmailVerification() {
+        // [START sendemailverification]
+        firebase.auth().currentUser.sendEmailVerification().then(function () {
+          // Email Verification sent!
+          // [START_EXCLUDE]
+          alert('Email Verification Sent!');
+          // [END_EXCLUDE]
+        });
+        // [END sendemailverification]
+      }
+
+      function sendPasswordReset() {
+        var email = document.getElementById('email').value;
+        // [START sendpasswordemail]
+        firebase.auth().sendPasswordResetEmail(email).then(function () {
+          // Password Reset Email Sent!
+          // [START_EXCLUDE]
+          alert('Password Reset Email Sent!');
+          // [END_EXCLUDE]
+        }).catch(function (error) {
+          // Handle Errors here.
+          var errorCode = error.code;
+          var errorMessage = error.message;
+          // [START_EXCLUDE]
+          if (errorCode == 'auth/invalid-email') {
+            alert(errorMessage);
+          } else if (errorCode == 'auth/user-not-found') {
+            alert(errorMessage);
+          }
+          console.log(error);
+          // [END_EXCLUDE]
+        });
+        // [END sendpasswordemail];
+      }
+
+      /**
+       * initApp handles setting up UI event listeners and registering Firebase auth listeners:
+       *  - firebase.auth().onAuthStateChanged: This listener is called when the user is signed in or
+       *    out, and that is where we update the UI.
+       */
+      function initApp() {
+        // Listening for auth state changes.
+        // [START authstatelistener]
+        firebase.auth().onAuthStateChanged(function (user) {
+          // [START_EXCLUDE silent]
+          // document.getElementById('quickstart-verify-email').disabled = true;
+          // [END_EXCLUDE]
+          if (user) {
+            // User is signed in.
+            window.location.href = 'index.html';
+            // [START_EXCLUDE]
+            // document.getElementById('quickstart-sign-in-status').textContent = 'Signed in';
+            // document.getElementById('quickstart-sign-in').textContent = 'Sign out';
+            // document.getElementById('quickstart-account-details').textContent = JSON.stringify(user, null, '  ');
+            // if (!emailVerified) {
+            //   document.getElementById('quickstart-verify-email').disabled = false;
+            // }
+            // [END_EXCLUDE]
+          } else {
+            // User is signed out.
+            // [START_EXCLUDE]
+            // document.getElementById('quickstart-sign-in-status').textContent = 'Signed out';
+            // document.getElementById('quickstart-sign-in').textContent = 'Sign in';
+            // document.getElementById('quickstart-account-details').textContent = 'null';
+            // [END_EXCLUDE]
+            // window.location.href = 'login.html';
+          }
+          // [START_EXCLUDE silent]
+          document.getElementById('quickstart-sign-in').disabled = false;
+          // [END_EXCLUDE]
+        });
+        // [END authstatelistener]
+
+        document.getElementById('quickstart-sign-in').addEventListener('click', toggleSignIn, false);
+        // document.getElementById('quickstart-verify-email').addEventListener('click', sendEmailVerification, false);
+        // document.getElementById('quickstart-password-reset').addEventListener('click', sendPasswordReset, false);
+      }
+
+      window.onload = function () {
+        initApp();
+      };
+    </script>
+
+  </head>
+
+  <body class="bg-dark">
+
+    <div class="container login-container">
+      <div class="card card-login mx-auto mt-5">
+        <div class="card-header text-center">Login</div>
+        <div class="card-body">
+          <div>
+            <div class="form-group">
+              <div class="form-label-group">
+                <input type="email" id="email" class="form-control" placeholder="Derección de correo" required="required" autofocus="autofocus">
+                <label for="email">Dirección de correo electrónico</label>
+              </div>
+            </div>
+            <div class="form-group">
+              <div class="form-label-group">
+                <input type="password" id="password" class="form-control" placeholder="Contraseña" required="required">
+                <label for="password">Contraseña</label>
+              </div>
+            </div>
+            <button type="button" class="btn btn-primary btn-block" id="quickstart-sign-in">Entrar</button>
+          </div>
+          <div class="text-center">
+            <a class="d-block small" href="forgot-password.html">¿Olvidó su contraseña?</a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bootstrap core JavaScript-->
+    <script src="vendor/jquery/jquery.min.js"></script>
+    <script src="vendor/bootstrap/js/bootstrap.bundle.min.js"></script>
+
+    <!-- Core plugin JavaScript-->
+    <script src="vendor/jquery-easing/jquery.easing.min.js"></script>
+
+  </body>
+
+</html>
