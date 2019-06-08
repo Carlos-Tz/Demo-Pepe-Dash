@@ -165,7 +165,8 @@ function drawChart(dataSet, id) {
           },
           color: '#fff',
         }
-      }
+      },
+      events: []
     }
 
   });
@@ -208,7 +209,8 @@ function drawEmojiChart(dataSet, id) {
           },
           color: '#fff',
         }
-      }
+      },
+      events :[]
     }
   });
 }
